@@ -1,0 +1,26 @@
+name: release-please
+on:
+  pull_request:
+    types:
+      - closed
+jobs:
+  merge_job:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: elixir
+          package-name: splashlight
+          bump-minor-pre-major: true
+          bump-patch-for-minor-pre-major: true
+          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
+
+
+  close_job:
+    # this job will only run if the PR has been closed without being merged
+    if: github.event.pull_request.merged == false
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo PR #${{ github.event.number }} has been closed without being merged
